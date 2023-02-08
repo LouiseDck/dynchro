@@ -29,3 +29,7 @@ __pycache__/
 lib64
 
 /share/
+/include/
+
+# h5ad files
+tests/data/*.h5ad

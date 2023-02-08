@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 import scipy.stats
 from anndata._core.anndata import AnnData
-from kernels import apply_gaussian_kernel, get_gaussian_transition_matrix
+
+from .kernels import apply_gaussian_kernel, get_gaussian_transition_matrix
 
 
 # Main function to calculate the pseudocells.
