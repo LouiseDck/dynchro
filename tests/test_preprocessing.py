@@ -1,5 +1,3 @@
-import os
-
 import anndata
 import pytest
 
@@ -8,7 +6,6 @@ import dynchro
 
 @pytest.fixture(scope="session")
 def dataset1():
-    print(os.getcwd())
     yield anndata.read("tests/data/batcheffect_dataseta0.h5ad")
 
 
