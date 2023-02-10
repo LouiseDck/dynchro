@@ -22,6 +22,7 @@ __pycache__/
 # IDEs
 /.idea/
 /.vscode/
+*.code-workspace
 
 # Venv
 /lib/

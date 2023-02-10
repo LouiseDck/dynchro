@@ -16,6 +16,17 @@ from .kernels import apply_gaussian_kernel, get_gaussian_transition_matrix
 #
 # Current solution -> put it into .varm
 def calculate_pseudocells(adata: AnnData, amount: int, lineage_label: str) -> AnnData:
+    """Main function used to calculate pseudocells. It will generate the amount of pseudocells specified by the amount parameter for the specified lineage in the anndata object.
+    The pseudocells will be stored in adata.varm[f"pseudocells_{amount}_{lineage_label}"] and the pseudotime of the pseudocells will be stored in adata.uns[f"pseudocells_{amount}_{lineage_label}_pseudotime"].
+
+    Args:
+        adata (AnnData): The anndata object.
+        amount (int): The amount of pseudocells to generate for this lineage.
+        lineage_label (str): The lineage for which to generate pseudocells.
+
+    Returns:
+        AnnData: The anndata object, updated with the pseudocells and pseudotime, stored in adata.varm[f"pseudocells_{amount}_{lineage_label}"] and adata.uns[f"pseudocells_{amount}_{lineage_label}_pseudotime"] respectively.
+    """
     trunc_anndata = adata[adata.obs[lineage_label]]
     pseudocell_pseudotimes = interpolate_pseudocells(trunc_anndata, amount)
     trunc_anndata, pseudocells = smooth_pseudocells(trunc_anndata, pseudocell_pseudotimes, amount)
@@ -52,10 +63,23 @@ def calculate_pseudotime_distance(pseudocell_pseudotimes: List[int], trajectory_
 
 # Merges pseudocells that appear in multiple lineages, so that pseuodcells lie minimum 1 percentile apart.
 # Might need to be tested for common pseudocells in:
-# - 3 lineages
+# - 3 lineages: DONE & works
 # - at the end of a lineage
 # - in the middle of a lineage
+# TODO: let it work for arbitrary overlapping sections between the lineages?
 def merge_pseudocells_lineages(adata: AnnData, lineages: str, pseudocell_amount: int) -> AnnData:
+    """Merges pseudocells from the different lineages, so that there are less overlapping pseudocells.
+    Tries to ensure that the individual lineage dynamics stay preserved.
+    Important: will only work if there is 1 overlapping section between the lineages.
+
+    Args:
+        adata (AnnData): The anndata object containing the pseudocells.
+        lineages (str): The lineages for which to merge the pseudocells.
+        pseudocell_amount (int): The amount of pseudocells that were generated for each lineage.
+
+    Returns:
+        AnnData: An updated anndata object, containing the merged pseudocells.
+    """
     common_cells = adata[adata.obs[lineages].all(axis=1)]
     minpt = min(common_cells.obs.pseudotime)
     maxpt = max(common_cells.obs.pseudotime)
