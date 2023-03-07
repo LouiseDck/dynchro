@@ -1,4 +1,5 @@
 import anndata
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
@@ -8,6 +9,7 @@ import dynchro
 @pytest.fixture(scope="session")
 def dataset1():
     d1 = anndata.read("tests/data/batcheffect_dataseta0.h5ad")
+    d1.uns["id"] = "dataset1"
     d1 = dynchro.pp.preprocess_ti(d1, root="sB")
     d1 = dynchro.pp.label_lineage(d1, "milestones", ["sA", "sB", "SBmid", "sC", "sEndC"], "lineage1")
     d1 = dynchro.pp.label_lineage(d1, "milestones", ["sA", "sB", "SBmid", "sD", "sEndD"], "lineage2")
@@ -23,6 +25,7 @@ def dataset1():
 @pytest.fixture(scope="session")
 def dataset2():
     d2 = anndata.read("tests/data/batcheffect99_datasetb0.h5ad")
+    d2.uns["id"] = "dataset2"
     d2 = dynchro.pp.preprocess_ti(d2, root="sB")
     d2 = dynchro.pp.label_lineage(d2, "milestones", ["sA", "sB", "SBmid", "sC", "sEndC"], "lineage1")
     d2 = dynchro.pp.label_lineage(d2, "milestones", ["sA", "sB", "SBmid", "sD", "sEndD"], "lineage2")
@@ -100,7 +103,7 @@ class TestAlignment:
         matching_lineages = dynchro.tl.get_matching_lineages([dataset1, dataset2], config=config)
         assert matching_lineages == [("lineage1", "lineage2"), ("lineage1", "lineage2")]
 
-    @pytest.mark.skip(reason="Don't know how to test this yet, maybe plots?")
+    # @pytest.mark.skip(reason="Don't know how to test this yet, maybe plots?")
     def test_align_trajectories_simple(self, dataset1, dataset2):
         config = {
             "compare_lineages_pseudocells": False,
@@ -112,6 +115,10 @@ class TestAlignment:
 
         matching_lineages = dynchro.tl.get_matching_lineages([dataset1, dataset2], config=config)
         aligned = dynchro.tl.align_trajectories(matching_lineages, [dataset1, dataset2], pseudocells=False)
+
+        dynchro.pl.plot_scatter_lines(dataset1, dataset2)
+        plt.show()
+
         # TODO: how to test this?
         assert 1 == 0
 

@@ -1,3 +1,17 @@
+import anndata as ad
+import numpy as np
+import pandas as pd
+import scipy.cluster.hierarchy
+import scipy.spatial.distance
+from sklearn.cluster import AgglomerativeClustering
+
+from .alignment import (
+    align_lineages,
+    align_trajectories,
+    get_counts_common_vars,
+    get_matching_lineages,
+)
+
 #####################
 # MULTI COMPARISONS #
 #####################
@@ -17,33 +31,17 @@ def multi_compare(trajectories, lineage_labels, config=None, pseudocell_labels=N
             traj2 = trajectories[j]
             # This is not new right, this should just use normal matching & alignment
             cost = compare_trajectories(traj1, lineage_labels, traj2, lineage_labels, config=config)
-            # cost2 = compare_euclidean  (traj1, lineage_labels, traj2, lineage_labels, config = config)
-
-            # matching = get_matching_lineages(traj1, traj2, lineage_labels, lineage_labels, pseudocells=pseudocells)
-            # row_index, column_index = scipy.optimize.linear_sum_assignment(np.array(matching))
-            # cost = np.sum(np.array(results)[row_index, column_index])
 
             results2.append(cost)
             # results_euclidean2.append(cost2)
         results.append(results2)
         # results_euclidean.append(results_euclidean2)
 
-    # extract this from the uns?
-    # store the results directly in the dataframe perhaps?
     distances = pd.DataFrame(data=results, index=indices, columns=indices)
 
-    linkage = hc.linkage(scipy.spatial.distance.squareform(results), method="average")
-    sns.clustermap(distances, row_linkage=linkage, col_linkage=linkage)
-    plt.savefig("twelve.png")
-    # plt.show()
+    linkage = scipy.cluster.hierarchy.linkage(scipy.spatial.distance.squareform(results), method="average")
 
-    # distances_euclidean = pd.DataFrame(data = results_euclidean, index = ["ct0", "be0", "ct1", "be1", "ct2", "be2"], columns = ["ct0", "be0", "ct1", "be1", "ct2", "be2"])
-    # linkage = hc.linkage(scipy.spatial.distance.squareform(results_euclidean), method='average')
-    # sns.clustermap(distances_euclidean, row_linkage=linkage, col_linkage=linkage)
-    # TODO: the clustermap is perfection!
-    # But how does it differ from euclidean distance?
-
-    clustering2 = sklearn.cluster.AgglomerativeClustering(
+    clustering2 = AgglomerativeClustering(
         n_clusters=3, affinity="precomputed", linkage="complete", compute_full_tree=True
     ).fit(results)
 

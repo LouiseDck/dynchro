@@ -1,1 +1,1 @@
-from .basic import BasicClass, basic_plot
+from .plot import plot_scatter, plot_scatter_lines

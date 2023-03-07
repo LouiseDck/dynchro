@@ -79,6 +79,16 @@ def align_trajectories(
             lineages[1] = lineages[1][np.argsort(pseudotimes[1]), :]
             path1, path2, total_dist, cost, distances = align_lineages(lineages[0].X, lineages[1].X)
 
+        id1 = trajectories[0].uns["id"]
+        id2 = trajectories[1].uns["id"]
+
+        trajectories[0].uns[f"alignment_costs_{label1}_{id2}"] = cost
+        trajectories[0].uns[f"alignment_path_{label2}_{id2}"] = path1
+        trajectories[1].uns[f"alignment_costs_{label1}_{id1}"] = cost
+        trajectories[1].uns[f"alignment_path_{label2}_{id2}"] = path2
+
+        # TODO: save all this in the anndatas, or return this information somehow -> use an ID (alignment_id -> corrected pseudotimes in obs)
+        # TODO: use alignment_id to store path & distance matrix in varm of uns
         index1, wpt1, index2, wpt2 = warp_pseudotime(
             lineages[0], lineages[1], path1, path2, pseudotimes[0], pseudotimes[1], pseudocells=pseudocells
         )
@@ -87,6 +97,7 @@ def align_trajectories(
         add_warped_pseudotime(trajectories[1], index2, wpt2, label2)
 
     to_merge = [[matching_lineages[i][j] for i in range(2)] for j in range(len(matching_lineages))]
+    # TODO: maybe merge the costs & paths
     merged = [merge_lineages(trajectory, labels) for trajectory, labels in zip(trajectories, to_merge)]
 
     return merged
@@ -202,5 +213,7 @@ def merge_lineages(trajectory, labels):
     trajectory.obs.loc[common_cells_mask, common_label] = (
         trajectory[common_cells_mask].obs[pseudotime_lineage_labels].mean(axis=1)
     )
+
+    # TODO merge the alignment paths as well
 
     return trajectory
