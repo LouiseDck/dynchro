@@ -46,7 +46,7 @@ def preprocess_ti(adata, root=None, to_remove=None):
         adata.uns["iroot"] = np.flatnonzero(adata.obs["milestones"] == root)[0]
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
-    sc.pp.scale(adata, max_value=10)
+    # sc.pp.scale(adata, max_value=10)
     sc.pp.neighbors(adata, random_state=1)
     sc.tl.umap(adata, random_state=1)
     sc.tl.paga(adata, groups="milestones")

@@ -31,9 +31,12 @@ def calculate_pseudocells(adata: AnnData, amount: int, lineage_label: str) -> An
     pseudocell_pseudotimes = interpolate_pseudocells(trunc_anndata, amount)
     trunc_anndata, pseudocells = smooth_pseudocells(trunc_anndata, pseudocell_pseudotimes, amount)
 
+    pseudocell_names = [f"pseudocell_{lineage_label}_{i}" for i in range(amount)]
+    pseudocell_pseudotimes = {k: v for k, v in zip(pseudocell_names, pseudocell_pseudotimes)}
+
     # Save information into anndata
     adata.varm[f"pseudocells_{amount}_{lineage_label}"] = pseudocells.T
-    adata.uns[f"pseudocells_{amount}_{lineage_label}_pseudotime"] = pd.DataFrame({"pseudotime": pseudocell_pseudotimes})
+    adata.uns[f"pseudocells_{amount}_{lineage_label}_pseudotime"] = pd.Series(pseudocell_pseudotimes)
     if "pseudocells" not in adata.uns:
         adata.uns["pseudocells"] = []
     adata.uns["pseudocells"] += [f"pseudocells_{amount}_{lineage_label}"]
@@ -91,7 +94,7 @@ def merge_pseudocells_lineages(adata: AnnData, lineages: str, pseudocell_amount:
         adata.varm[f"pseudocells_{pseudocell_amount}_{lineage_label}"].T for lineage_label in lineages
     ]
     pseudocell_lineages_pseudotimes = [
-        adata.uns[f"pseudocells_{pseudocell_amount}_{lineage_label}_pseudotime"].squeeze().to_numpy()
+        adata.uns[f"pseudocells_{pseudocell_amount}_{lineage_label}_pseudotime"]  # .to_numpy()
         for lineage_label in lineages
     ]
 
@@ -99,7 +102,7 @@ def merge_pseudocells_lineages(adata: AnnData, lineages: str, pseudocell_amount:
     masks = [(plp >= minpt) & (plp <= maxpt) for plp in pseudocell_lineages_pseudotimes]
 
     common_pseudocells = np.concatenate([pll[np.where(mask)[0], :] for pll, mask in zip(pseudocell_lineages, masks)])
-    pseudotimes = np.concatenate([plp[mask] for plp, mask in zip(pseudocell_lineages_pseudotimes, masks)])
+    pseudotimes = pd.concat([plp[mask] for plp, mask in zip(pseudocell_lineages_pseudotimes, masks)])
     # sort for the iterative merging & replacement
     pseudocells = common_pseudocells[np.argsort(pseudotimes), :]
     pseudotimes_sorted = pseudotimes[np.argsort(pseudotimes)]
