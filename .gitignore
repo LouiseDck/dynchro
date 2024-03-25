@@ -33,4 +33,9 @@ lib64
 /include/
 
 # h5ad files
-tests/data/*.h5ad
+*.h5ad
+*.rds
+*.pkl
+
+# image files
+*.png
