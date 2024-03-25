@@ -4,4 +4,4 @@ from .alignment import (
     get_counts_common_vars,
     get_matching_lineages,
 )
-from .dtw_own import skip_dtw, skip_traceback
+from .dtw_own import skip_dtw, skip_traceback, skip_traceback2
