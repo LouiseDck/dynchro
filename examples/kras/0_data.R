@@ -116,7 +116,7 @@ sds
 df <- full_join(
   df %>% select(X1, tSNE1, tSNE2, Cluster, Batch) %>%
     dplyr::rename("cells" = "X1"),
-  slingPseudotime(sds) %>% 
+  slingPseudotime(sds) %>%
     as.data.frame() %>%
     mutate(cells = rownames(.))
 ) %>%
@@ -128,11 +128,11 @@ p4 <- ggplot(df, aes(x = tSNE1, y = tSNE2, col = Batch)) +
 for (batch in unique(kras$Batch)) {
   sds_cond <- sdss[[batch]]
   for (i in 1:3) {
-    p4 <- p4 +  
+    p4 <- p4 +
       geom_path(data = slingCurves(sds_cond)[[i]]$s[slingCurves(sds_cond)[[i]]$ord, ] %>%
                   as.data.frame() %>%
-                  mutate(Batch = batch), 
-                size = 1.5)   
+                  mutate(Batch = batch),
+                size = 1.5)
   }
 }
 position <- data.frame(
@@ -141,7 +141,7 @@ position <- data.frame(
   "Batch" = "H2122A",
   "text" = paste0("Lineage ", 1:3)
 )
-p4 <- p4 + 
+p4 <- p4 +
   geom_text(data = position, col = "black", aes(label = text), size = 5)
 p4
 
@@ -186,7 +186,7 @@ fateSelectionTest(sds, conditions = kras$Batch, pairwise = TRUE)
 
 weights <- condiments:::.sling_reassign(sds)
 df <- df %>%
-  full_join(weights %>% 
+  full_join(weights %>%
               as.data.frame() %>%
               mutate(cells = rownames(.)) %>%
               dplyr::rename("Lineage1" = V1, "Lineage2" = V2, "Lineage3" = V3) %>%
