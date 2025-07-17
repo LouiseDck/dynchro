@@ -6,7 +6,7 @@ import scipy.optimize
 import scipy.spatial
 from anndata import AnnData
 
-from .dtw_own import skip_dtw, skip_traceback
+from .dtw_own import dtw, traceback
 
 
 def get_matching_lineages(trajectories: List[AnnData], config=None) -> List[Tuple[str]]:
@@ -169,14 +169,14 @@ def get_pseudotime(adata, label, pseudocells=False):
 
 # align two lineages using dtw
 def align_lineages(lineage1, lineage2, normalize=False, traceback=True):
-    total_dist, cost, distances = skip_dtw(lineage1, lineage2, distance="euclidean")
+    total_dist, cost, distances = dtw(lineage1, lineage2, distance="euclidean")
 
     if normalize:
         total_dist = total_dist / (lineage1.shape[0] * lineage2.shape[0])
 
     path1, path2 = [], []
     if traceback:
-        path1, path2 = skip_traceback(distances[1:, 1:])
+        path1, path2 = traceback(distances[1:, 1:])
 
     return path1, path2, total_dist, cost, distances
 
