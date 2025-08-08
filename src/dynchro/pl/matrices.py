@@ -1,0 +1,66 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+from anndata import AnnData
+
+def plot_cost_matrix(
+    cost: np.ndarray,
+    reference: AnnData | None = None,
+    query: AnnData | None = None,
+    dtw_key: str = "dtw",
+    plot_paths: bool = False
+) -> None:
+    """
+    Plot the cost matrix of the DTW algorithm.
+    """
+    sns.heatmap(cost, cmap="viridis")
+    plt.title(f"{dtw_key} Cost Matrix")
+    if plot_paths and reference is not None and query is not None:
+        path1 = flatten(reference.obs[f"{dtw_key}_path"])
+        path2 = flatten(query.obs[f"{dtw_key}_path"])
+        plt.plot(path1, path2, color='red', linewidth=1)
+    plt.xlabel("Query")
+    plt.ylabel("Reference")
+    plt.show()
+
+
+def plot_distance_matrix(
+    distance: np.ndarray,
+    reference: AnnData | None = None,
+    query: AnnData | None = None,
+    dtw_key: str = "dtw",
+    plot_paths: bool = True
+) -> None:
+    """
+    Plot the distance matrix of the DTW algorithm.
+    """
+    sns.heatmap(distance, cmap="viridis")
+    if plot_paths and reference is not None and query is not None:
+        path1 = flatten(reference.obs[f"{dtw_key}_path"])
+        path2 = flatten(query.obs[f"{dtw_key}_path"])
+        plt.plot(path1, path2, color='red', linewidth=1)
+    plt.title(f"{dtw_key} Distance Matrix\nTotal distance: {reference.uns[f"{dtw_key}_distance"]:.2f}")
+    plt.xlabel("Query")
+    plt.ylabel("Reference")
+    plt.show(
+)
+
+def flatten(values : list) -> list:
+    """
+    Flatten a list of lists into a single list.
+    """
+    return [item for sublist in values for item in sublist]
+
+def plot_dtw_matrices(
+    reference: AnnData,
+    query: AnnData,
+    dtw_key: str = "dtw"
+) -> None:
+    """
+    Plot the DTW matrices of the DTW algorithm.
+    """
+    cost = reference.obsm[f"{dtw_key}_cost"]
+    distance = reference.obsm[f"{dtw_key}_D"]
+
+    plot_cost_matrix(cost, reference, query, dtw_key)
+    plot_distance_matrix(distance, reference, query, dtw_key)

@@ -15,6 +15,7 @@ from .kernels import apply_gaussian_kernel, get_gaussian_transition_matrix
 # varp is not an option as it requires (var, var) as dimensions
 #
 # Current solution -> put it into .varm
+# Should actually do mudata :/
 def calculate_pseudocells(adata: AnnData, amount: int, lineage_label: str) -> AnnData:
     """Main function used to calculate pseudocells. It will generate the amount of pseudocells specified by the amount parameter for the specified lineage in the anndata object.
     The pseudocells will be stored in adata.varm[f"pseudocells_{amount}_{lineage_label}"] and the pseudotime of the pseudocells will be stored in adata.uns[f"pseudocells_{amount}_{lineage_label}_pseudotime"].

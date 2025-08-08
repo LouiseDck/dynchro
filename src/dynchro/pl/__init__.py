@@ -1,8 +1,7 @@
-from .plot import (
-    plot_dtw_clustermap,
-    plot_dtw_lineage,
-    plot_dtw_trajectories,
-    plot_dtw_trajectories_scatter,
-    plot_scatter,
-    plot_scatter_lines,
+from .matrices import (
+    plot_cost_matrix,
+    plot_distance_matrix,
+    plot_dtw_matrices
 )
+
+from .kde import plot_kde_comparison
