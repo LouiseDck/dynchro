@@ -49,7 +49,18 @@ def flatten(values : list) -> list:
     """
     Flatten a list of lists into a single list.
     """
-    return [item for sublist in values for item in sublist]
+    flat_list = []
+
+    for sublist in values:
+        if isinstance(sublist, list):
+            # If the item is a list, extend the result with its contents
+            flat_list.extend(sublist)
+        else:
+            # If the item is not a list, append it directly if it is not None
+            if sublist is not None:
+                flat_list.append(sublist)
+
+    return flat_list
 
 def plot_dtw_matrices(
     reference: AnnData,

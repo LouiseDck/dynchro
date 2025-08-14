@@ -139,7 +139,6 @@ def traceback(
     Parameters
     ----------
     """
-
     if D is not None:
         mode = "only_results"
 
@@ -178,21 +177,20 @@ def traceback(
             "`end_x` and `end_y` must be integers within the range of the distance matrix.",
             f"`end_x` must be between 0 and {D.shape[0] - 1}, and `end_y` must be between 0 and {D.shape[1] - 1}."
         )
-
     path1, path2 = traceback_start(D, end_x, end_y)
     agg_path1, agg_path2 = aggregate_path(path1, path2)
 
     if mode == "only_results":
         return agg_path1, agg_path2
 
-    reference.obs[f"{dtw_key}_path"] = agg_path1.values()
-    query.obs[f"{dtw_key}_path"] = agg_path2.values()
+    reference.obs[f"{dtw_key}_path"] = list(agg_path1.values()) + [None] * (len(reference.obs) - len(agg_path1.values()))
+    query.obs[f"{dtw_key}_path"] = list(agg_path2.values()) + [None] * (len(query.obs) - len(agg_path2.values()))
 
     cells_path1 = assign_cells_from_path(agg_path1, query)
     cells_path2 = assign_cells_from_path(agg_path2, reference)
 
-    reference.obs[f"{dtw_key}_cells_path"] = cells_path1.values()
-    query.obs[f"{dtw_key}_cells_path"] = cells_path2.values()
+    reference.obs[f"{dtw_key}_cells_path"] = list(cells_path1.values()) + [None] * (len(reference.obs) - len(cells_path1.values()))
+    query.obs[f"{dtw_key}_cells_path"] = list(cells_path2.values()) + [None] * (len(query.obs) - len(cells_path2.values()))
 
     if mode == "copy":
         return reference, query
