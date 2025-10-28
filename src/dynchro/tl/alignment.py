@@ -43,7 +43,7 @@ def get_matching_lineages(
                     lineage1.X, lineage2.X, distance="euclidean", mode=mode
                 )
                 path1, path2 = traceback(D = distances_matrix)
-                norm_distance = total_dist / sum(len(x) for x in path1.values())
+                norm_distance = total_dist / (cost.shape[0] * cost.shape[1])# sum(len(x) for x in path1.values())
             elif mode == "copy":
                 ll_dtw_key = f"{dtw_key}_{label1}_{label2}"
 
@@ -51,8 +51,8 @@ def get_matching_lineages(
                     lineage1, lineage2, distance="euclidean", mode=mode, dtw_key=ll_dtw_key
                 )
                 total_dist = lineage1.uns[f"{ll_dtw_key}_distance"]
-                lineage1, lineage2 = traceback(lineage1, lineage2, dtw_key=ll_dtw_key, mode=mode)
-                norm_distance = total_dist / sum((len(x) for x in lineage1.obs[f"{ll_dtw_key}_path"].values))
+                lineage1, lineage2 = traceback(lineage1, lineage2, dtw_key=ll_dtw_key, mode=mode, diag_mult=2.0)
+                norm_distance = total_dist / (len(lineage1) * len(lineage2))#sum((len(x) for x in lineage1.obs[f"{ll_dtw_key}_path"].values))
 
             distances[i, j] = norm_distance
 

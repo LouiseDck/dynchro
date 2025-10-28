@@ -23,7 +23,13 @@ plotPCA(gt)
 params_estimated <- splatEstimate(counts)
 saveRDS(params_estimated, "examples/large_scale_synthetic/params_estimated.rds")
 
-sim <- splatSimulate(params_estimated, batchCells = c(1000, 1000), group.prob = c(0.65, 0.1, 0.25), path.from = c(0, 1, 2), method = "paths")
+sim <- splatSimulate(
+  params_estimated,
+  batchCells = c(1000, 1000),
+  group.prob = c(0.65, 0.1, 0.25),
+  path.from = c(0, 1, 2),
+  method = "paths"
+)
 sim <- logNormCounts(sim)
 plotPCA(sim, colour_by = "Batch")
 saveRDS(sim, "examples/large_scale_synthetic/sim.rds")
@@ -33,7 +39,11 @@ saveRDS(sim, "examples/large_scale_synthetic/sim_lognorm.rds")
 sim <- scater::runPCA(sim)
 plotPCA(sim, colour_by = "Batch")
 
-sim2 <- splatSimulate(params_estimated, batchCells = c(1000, 1000, 1000, 1000, 1000, 250, 1250, 3000), method = "paths")
+sim2 <- splatSimulate(
+  params_estimated,
+  batchCells = c(1000, 1000, 1000, 1000, 1000, 250, 1250, 3000),
+  method = "paths"
+)
 sim2 <- logNormCounts(sim2)
 saveRDS(sim2, "examples/large_scale_synthetic/sim2_lognorm.rds")
 sim2 <- scater::runPCA(sim2)

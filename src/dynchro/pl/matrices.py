@@ -8,20 +8,25 @@ def plot_cost_matrix(
     reference: AnnData | None = None,
     query: AnnData | None = None,
     dtw_key: str = "dtw",
-    plot_paths: bool = False
+    plot_paths: bool = False,
+    cmap = "viridis",
+    path_color = "red",
+    ax = None
 ) -> None:
     """
     Plot the cost matrix of the DTW algorithm.
     """
-    sns.heatmap(cost, cmap="viridis")
-    plt.title(f"{dtw_key} Cost Matrix")
+    if ax is None:
+        ax = plt.gca()
+    sns.heatmap(cost, cmap=cmap, ax=ax)
+    ax.set_title(f"{dtw_key} Cost Matrix")
     if plot_paths and reference is not None and query is not None:
         path1 = flatten(reference.obs[f"{dtw_key}_path"])
         path2 = flatten(query.obs[f"{dtw_key}_path"])
-        plt.plot(path1, path2, color='red', linewidth=1)
-    plt.xlabel("Query")
-    plt.ylabel("Reference")
-    plt.show()
+        ax.plot(path1, path2, color=path_color, linewidth=1)
+    ax.set_xlabel("Query")
+    ax.set_ylabel("Reference")
+    # plt.show()
 
 
 def plot_distance_matrix(
@@ -29,21 +34,23 @@ def plot_distance_matrix(
     reference: AnnData | None = None,
     query: AnnData | None = None,
     dtw_key: str = "dtw",
-    plot_paths: bool = True
+    plot_paths: bool = True,
+    ax = None
 ) -> None:
     """
     Plot the distance matrix of the DTW algorithm.
     """
-    sns.heatmap(distance, cmap="viridis")
+    if ax is None:
+        ax = plt.gca()
+    sns.heatmap(distance, cmap="viridis", ax=ax)
+    ax.set_title(f"{dtw_key} Distance Matrix\nTotal distance: {reference.uns[f"{dtw_key}_distance"]:.2f}")
     if plot_paths and reference is not None and query is not None:
         path1 = flatten(reference.obs[f"{dtw_key}_path"])
         path2 = flatten(query.obs[f"{dtw_key}_path"])
-        plt.plot(path1, path2, color='red', linewidth=1)
-    plt.title(f"{dtw_key} Distance Matrix\nTotal distance: {reference.uns[f"{dtw_key}_distance"]:.2f}")
-    plt.xlabel("Query")
-    plt.ylabel("Reference")
-    plt.show(
-)
+        ax.plot(path1, path2, color='red', linewidth=1)
+    ax.set_xlabel("Query")
+    ax.set_ylabel("Reference")
+    # plt.show()
 
 def flatten(values : list) -> list:
     """
@@ -65,7 +72,8 @@ def flatten(values : list) -> list:
 def plot_dtw_matrices(
     reference: AnnData,
     query: AnnData,
-    dtw_key: str = "dtw"
+    dtw_key: str = "dtw",
+    axes = None
 ) -> None:
     """
     Plot the DTW matrices of the DTW algorithm.
@@ -73,5 +81,8 @@ def plot_dtw_matrices(
     cost = reference.obsm[f"{dtw_key}_cost"]
     distance = reference.obsm[f"{dtw_key}_D"]
 
-    plot_cost_matrix(cost, reference, query, dtw_key)
-    plot_distance_matrix(distance, reference, query, dtw_key)
+    if axes is None:
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+    plot_cost_matrix(cost, reference, query, dtw_key, ax=axes[0])
+    plot_distance_matrix(distance, reference, query, dtw_key, ax=axes[1])

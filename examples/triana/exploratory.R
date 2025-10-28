@@ -18,8 +18,8 @@ DimPlot(ab200_projected)
 DimPlot(healthy, reduction = "MOFAUMAP")
 
 healthy_wta <- merge(healthy, wta_projected, add.cell.ids = c("Healthy", "WTA"))
-healthy_wta_umap <- 
-DimPlot(healthy_wta)
+healthy_wta_umap <-
+  DimPlot(healthy_wta)
 
 
 healthy_umap <- healthy@reductions$MOFAUMAP@cell.embeddings
@@ -30,9 +30,14 @@ test1 <- rbind(healthy_umap, wta_projected_umap)
 test <- rbind(test1, ab200_projected_umap)
 test <- as.data.frame(test)
 
-sample <- c(rep("Healthy", nrow(healthy_umap)), rep("WTA", nrow(wta_projected_umap)), rep("200AB", nrow(ab200_projected_umap)))
+sample <- c(
+  rep("Healthy", nrow(healthy_umap)),
+  rep("WTA", nrow(wta_projected_umap)),
+  rep("200AB", nrow(ab200_projected_umap))
+)
 
-p <- ggplot(test, aes(x = MOFAUMAP_1, y = MOFAUMAP_2, color = sample)) + geom_point()
+p <- ggplot(test, aes(x = MOFAUMAP_1, y = MOFAUMAP_2, color = sample)) +
+  geom_point()
 p
 
 p2 <- ggplot(healthy_umap, aes(x = MOFAUMAP_1, y = MOFAUMAP_2)) + geom_point()

@@ -39,3 +39,6 @@ lib64
 
 # image files
 *.png
+
+# examples folder
+/examples/

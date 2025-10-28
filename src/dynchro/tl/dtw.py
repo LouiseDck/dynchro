@@ -98,6 +98,8 @@ def dtw(
         elif isinstance(reference, np.ndarray) and isinstance(query, np.ndarray):
             assert reference.shape[1] == query.shape[1], \
                 "Reference and query numpy arrays must have the same number of features (columns)."
+            reference_matrix = reference
+            query_matrix = query
 
         dtw_distance, cost, D = _dtw(reference_matrix, query_matrix, distance)
 
@@ -131,6 +133,7 @@ def traceback(
         D: np.ndarray | None = None,
         end_x: int | str | None = None,
         end_y: int | str | None = None,
+        diag_mult: float = 2.0,
         mode: str = "copy"
         ) -> tuple[AnnData, AnnData] | tuple[np.ndarray, np.ndarray] | None:
     """
@@ -177,7 +180,7 @@ def traceback(
             "`end_x` and `end_y` must be integers within the range of the distance matrix.",
             f"`end_x` must be between 0 and {D.shape[0] - 1}, and `end_y` must be between 0 and {D.shape[1] - 1}."
         )
-    path1, path2 = traceback_start(D, end_x, end_y)
+    path1, path2 = traceback_start(D, end_x, end_y, diag_mult)
     agg_path1, agg_path2 = aggregate_path(path1, path2)
 
     if mode == "only_results":
@@ -218,10 +221,10 @@ def _dtw_cost(cost):
     return distances[-1, -1], cost, distances[1:, 1:]
 
 
-def traceback_start(D, i, j):
+def traceback_start(D, i, j, diag_mult):
     p, q = [i], [j]
     while (i > 0) or (j > 0):
-        tb = np.argmin((D[i - 1, j - 1], D[i, j - 1], D[i - 1, j]))
+        tb = np.argmin((diag_mult * D[i - 1, j - 1], D[i, j - 1], D[i - 1, j]))
         if tb == 0:
             i -= 1
             j -= 1

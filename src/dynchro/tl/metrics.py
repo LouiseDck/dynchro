@@ -9,6 +9,7 @@ def get_kde_eval(
     dataset: AnnData,
     pseudotime_key: str = "pseudotime",
     n_points: int = 100,
+    bandwidth: float = 0.1,
     mode: str = "copy"
 ) -> tuple[np.ndarray, np.ndarray] | AnnData | None:
     vector = dataset.obs[pseudotime_key].values
@@ -19,7 +20,7 @@ def get_kde_eval(
         vector = (vector - np.min(vector)) / (np.max(vector) - np.min(vector))
         dataset.obs[f"norm_{pseudotime_key}"] = vector
 
-    kde = scipy.stats.gaussian_kde(vector)
+    kde = gaussian_kde(vector, bw_method=bandwidth)
     x_values = np.linspace(0, 1, n_points)
     y_values = kde(x_values)
 

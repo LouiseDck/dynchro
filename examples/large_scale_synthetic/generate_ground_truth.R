@@ -19,7 +19,8 @@ if (hpc) {
 num_targets <- round((num_features - num_tfs) / 2)
 num_hks <- num_features - num_targets - num_tfs
 
-model <- initialise_model(backbone = backbone,
+model <- initialise_model(
+  backbone = backbone,
   num_tfs = num_tfs,
   num_targets = num_targets,
   num_hks = num_hks,

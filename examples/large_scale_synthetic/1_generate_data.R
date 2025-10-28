@@ -55,11 +55,11 @@ out <-
     num_cells = num_cells,
     gold_standard_params = gold_standard_default(
       census_interval = 1,
-      tau = 100/3600
+      tau = 100 / 3600
     ),
     simulation_params = simulation_default(
       census_interval = 10,
-      ssa_algorithm = ssa_etl(tau = 300/3600),
+      ssa_algorithm = ssa_etl(tau = 300 / 3600),
       experiment_params = simulation_type_wild_type(
         num_simulations = num_cells / 10
       )
@@ -106,8 +106,13 @@ generate_batch_effect <- function(index, config) {
   #     paste0("examples/large_scale_synthetic/data/batcheffect_dataseta", index, ".h5ad"))
 
   saveRDS(
-      dataset_a,
-      paste0("examples/large_scale_synthetic/data/batcheffect_dataseta", index, ".rds"))
+    dataset_a,
+    paste0(
+      "examples/large_scale_synthetic/data/batcheffect_dataseta",
+      index,
+      ".rds"
+    )
+  )
 
   model_between2 <- generate_diverging_kinetics(model_a, model_b, 0.9)
 
@@ -125,9 +130,13 @@ generate_batch_effect <- function(index, config) {
   #     paste0("examples/large_scale_synthetic/data/batcheffect_datasetb", index, ".h5ad"))
 
   saveRDS(
-      dataset_between,
-      paste0("examples/large_scale_synthetic/data/batcheffect_datasetb", index, ".rds"))
-
+    dataset_between,
+    paste0(
+      "examples/large_scale_synthetic/data/batcheffect_datasetb",
+      index,
+      ".rds"
+    )
+  )
 }
 set.seed(9356)
 
