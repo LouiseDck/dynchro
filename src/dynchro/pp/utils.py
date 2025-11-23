@@ -40,13 +40,11 @@ def label_lineage(anndata, clusterlabels, lineage_clusters, label):
 
     return anndata
 
-
 def preprocess_ti(adata, root=None, to_remove=None):
     if root is not None:
         adata.uns["iroot"] = np.flatnonzero(adata.obs["milestones"] == root)[0]
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
-    # sc.pp.scale(adata, max_value=10)
     sc.pp.neighbors(adata, random_state=1)
     sc.tl.umap(adata, random_state=1)
     sc.tl.paga(adata, groups="milestones")
@@ -56,11 +54,4 @@ def preprocess_ti(adata, root=None, to_remove=None):
     sc.tl.dpt(adata)
 
     adata.obs.rename(columns={"dpt_pseudotime": "pseudotime"}, inplace=True)
-    # sc.pl.umap(adata, color = ["leiden", "dpt_pseudotime", "milestones"])
     return adata
-
-
-def preprocess_batch_effect(dataset, remove=True):
-    if remove:
-        dataset = dataset[dataset.obs.milestones != "sEndC"]
-    return dataset

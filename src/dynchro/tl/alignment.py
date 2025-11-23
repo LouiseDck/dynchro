@@ -85,57 +85,6 @@ def align_lineages(lineage1, lineage2, normalize=False, plot=False, mode = "only
     return total_dist
 
 
-
-# def get_matching_lineages(trajectories: List[AnnData], config=None) -> List[Tuple[str]]:
-#     """Get the matching lineages between two trajectories.
-
-#     Args:
-#         trajectories (List[AnnData]): The two trajectories to compare, both AnnData objects.
-#         config (Dict[str, str], optional): A configuration dictionary, defining when to use pseudocells. Defaults to None.
-
-#     Returns:
-#         List[Tuple[str]]: A List of matching lineages labels, where the first element of the tuple is the lineage label of the first trajectory, and the second element is the lineage label of the second trajectory.
-#     """
-
-#     # Only select the genes / variables that are present in all trajectories
-#     common_vars = list(set.intersection(*(set(trajectory.var_names) for trajectory in trajectories)))
-
-#     # Get the lineages for each trajectory
-#     lineages = [
-#         [
-#             get_counts_common_vars(trajectory, config, "compare_trajectories_pseudocells", linlabel, common_vars)
-#             for linlabel in trajectory.uns["lineage_labels"]
-#         ]
-#         for trajectory in trajectories
-#     ]
-
-#     # Calculate the dtw distance between all the lineages
-#     distances = [
-#         [align_lineages(lineage1, lineage2, normalize=False, traceback=False)[2] for lineage1 in lineages[0]]
-#         for lineage2 in lineages[1]
-#     ]
-
-#     # Find the optimal matching between the lineages
-#     row_index, column_index = scipy.optimize.linear_sum_assignment(np.array(distances))
-#     matching = [
-#         (trajectories[0].uns["lineage_labels"][i], trajectories[1].uns["lineage_labels"][i])
-#         for i, j in zip(column_index, row_index)
-#     ]
-
-#     matching2 = [
-#         (
-#             trajectories[0],
-#             trajectories[1],
-#             trajectories[0].uns["lineage_labels"][i],
-#             trajectories[1].uns["lineage_labels"][i],
-#             f"{trajectories[0].uns['id']}_{trajectories[0].uns['lineage_labels'][i]}_{trajectories[1].uns['id']}_{trajectories[1].uns['lineage_labels'][i]}",
-#         )
-#         for i, j in zip(column_index, row_index)
-#     ]
-
-#     return row_index, column_index, distances  # matching, matching2
-
-
 def align_trajectories(matching_lineages: List[Tuple[str]], pseudocells: bool = False) -> List[AnnData]:
     """Aligns two trajectories based on the matching lineages.
 

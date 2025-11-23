@@ -116,16 +116,3 @@ def plot_dtw_trajectories_scatter(t1, t2, labels, mtx_labels=["costs", "dist"]):
     plot_scatter_trajectories(trajectories[1], labels, ax=axes[0, 1])
 
     return fig
-
-
-def plot_scatter_lines(t1, t2):
-    sns.set(rc={"figure.figsize": (13, 7.5)})
-    sns.set_style(style="white")
-
-    plot_scatter(t1)
-    plot_scatter(t2, offset=-5, color="#ff681c")
-
-
-def calculate_coords(t1, t2):
-    # is this lineage based?
-    pass

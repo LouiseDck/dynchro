@@ -35,13 +35,6 @@ class TestPreprocessing:
         # check that dpt has been run
         assert "pseudotime" in dataset1.obs, "DPT has not been run, or 'pseudotime' not added to obs"
 
-    def test_preprocess_batch_effect(self, dataset2):
-        preprocessed = dynchro.pp.preprocess_batch_effect(dataset2)
-
-        assert "sEndC" not in preprocessed.obs.milestones.unique(), "sEndC is still in the dataset"
-
-        # check that label has been removed
-
     def test_labelling(self, dataset1):
         dataset1 = dynchro.pp.label_lineage(dataset1, "milestones", ["sB", "sEndC"], "lineage1")
         # check that the right column name has been added
