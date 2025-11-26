@@ -407,10 +407,3 @@ class TestAlignment:
 
         self.test_shuffled(d1, d2, name="same_shuffled.png")
 
-    @pytest.mark.skip(reason="not implemented yet")
-    def test_align_trajectories_simple_pseudocells(self, dataset1, dataset2):
-        assert 1 == 0
-
-    @pytest.mark.skip(reason="not implemented yet")
-    def test_align_trajectories_complex_pseudocells(self, dataset_complex1, dataset_complex2):
-        assert 1 == 0
